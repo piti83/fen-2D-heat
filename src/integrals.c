@@ -135,5 +135,8 @@ void CalcHMatrix(Grid* grid, GlobalData* glob_data) {
 }
 
 void CalcHbcMatrix(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
-  ;
+  for (int i = 0; i < grid->n_elements; ++i) {
+    Element* e = &grid->elements[i];
+    
+  }
 }

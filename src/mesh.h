@@ -20,7 +20,7 @@ typedef struct {
 } Jacobian;
 
 typedef struct {
-  double n[4][4];
+  double n[2][4];
 } Surface;
 
 typedef struct {
