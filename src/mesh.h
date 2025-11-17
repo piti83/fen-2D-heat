@@ -3,10 +3,12 @@
 
 #include <stdint.h>
 #include <constants.h>
+#include <stdbool.h>
 
 typedef struct {
   double x;
   double y;
+  bool bc;
 } Node;
 
 typedef struct {
@@ -17,11 +19,16 @@ typedef struct {
   double dN_dy[4];
 } Jacobian;
 
+typedef struct {
+  double n[4][4];
+} Surface;
 
 typedef struct {
   unsigned int nodes[4];
   Jacobian jacobian[4];
   double h_matrix[4][4];
+  double hbc_matrix[4][4];
+  Surface surface[4];
 } Element;
 
 typedef struct {

@@ -133,3 +133,7 @@ void CalcHMatrix(Grid* grid, GlobalData* glob_data) {
     }
   }
 }
+
+void CalcHbcMatrix(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
+  ;
+}

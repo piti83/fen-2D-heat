@@ -1,8 +1,10 @@
+#include "io.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "constants.h"
-#include "io.h"
 
 void ReadFile(const char* path, GlobalData* glob_data, Grid* grid) {
   FILE* f_ptr = fopen(path, "r");
@@ -82,6 +84,24 @@ void ReadFile(const char* path, GlobalData* glob_data, Grid* grid) {
            &grid->elements[i].nodes[3]);
   }
 
+  if (!fgets(line_buffer, sizeof(line_buffer), f_ptr)) {
+    printf("Error during fgets()");
+  }
+  if (!fgets(line_buffer, sizeof(line_buffer), f_ptr)) {
+    printf("Error during fgets()");
+  }
+
+  for (int i = 0; i < grid->n_nodes; ++i) {
+    grid->nodes[i].bc = false;
+  }
+
+  char* token = strtok(line_buffer, ",");
+  while (token) {
+    int id = atoi(token);
+    grid->nodes[id-1].bc = true;
+    token = strtok(NULL, ",");
+  }
+
   fclose(f_ptr);
 
   glob_data->nip = NIP;
@@ -121,6 +141,16 @@ void PrintInfo(const GlobalData* glob_data, const Grid* grid) {
            grid->elements[i].nodes[3]);
   }
   printf("+-----------------------------------------+\n");
+
+  printf("                     BC                    \n");
+  printf("+-----------------------------------------+\n");
+  for (int i = 0; i < grid->n_nodes; ++i) {
+    if (grid->nodes[i].bc) {
+      printf("%d ", i+1);
+    }
+  }
+  printf("\n");
+  printf("+-----------------------------------------+\n");
 }
 
 void ExportJacobianData(const Grid* grid, const UniversalVals* uni_vals) {
@@ -131,18 +161,14 @@ void ExportJacobianData(const Grid* grid, const UniversalVals* uni_vals) {
           "==================== OBLICZONE STAŁE ====================\n\n");
   fprintf(fptr, "dN/dKsi\n");
   for (int i = 0; i < 4; ++i) {
-    fprintf(fptr, "\t%12.8f %12.8f %12.8f %12.8f\n",
-            uni_vals->dn_dksi[i][0],
-            uni_vals->dn_dksi[i][1],
-            uni_vals->dn_dksi[i][2],
+    fprintf(fptr, "\t%12.8f %12.8f %12.8f %12.8f\n", uni_vals->dn_dksi[i][0],
+            uni_vals->dn_dksi[i][1], uni_vals->dn_dksi[i][2],
             uni_vals->dn_dksi[i][3]);
   }
   fprintf(fptr, "dN/dEta\n");
   for (int i = 0; i < 4; ++i) {
-    fprintf(fptr, "\t%12.8f %12.8f %12.8f %12.8f\n",
-            uni_vals->dn_deta[i][0],
-            uni_vals->dn_deta[i][1],
-            uni_vals->dn_deta[i][2],
+    fprintf(fptr, "\t%12.8f %12.8f %12.8f %12.8f\n", uni_vals->dn_deta[i][0],
+            uni_vals->dn_deta[i][1], uni_vals->dn_deta[i][2],
             uni_vals->dn_deta[i][3]);
   }
 

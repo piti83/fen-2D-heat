@@ -18,14 +18,19 @@ int main() {
   CalcJacobians(&grid, &uni_vals);
   CalcHMatrix(&grid, &data);
 
-#ifndef DEBUG
+#ifdef DEBUG
   ExportJacobianData(&grid, &uni_vals);
 #endif  // DEBUG
 
   GlobHMatrix h_matrix;
   InitHMatrix(&h_matrix, &data);
   CalcGlobalHMatrix(&h_matrix, &grid);
+
+#ifdef DEBUG
   PrintGlobalH(&h_matrix);
+#endif  // DEBUG
+
+  CalcHbcMatrix(&grid, &uni_vals, &data);
 
   GridCleanup(&grid);
   HMatrixCleanup(&h_matrix);
