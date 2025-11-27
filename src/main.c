@@ -40,6 +40,7 @@ int main() {
 
   Equation eq;
   InitEquation(&data, &eq);
+  AgregatePVectors(&data, &grid, &eq);
 
   SolveEquation(&data, &eq);
 

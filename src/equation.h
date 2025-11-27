@@ -10,8 +10,9 @@ typedef struct {
   double* pg;
 } Equation;
 
-void InitEquation(GlobalData* glob_data, Equation* equation);
-void SolveEquation(GlobalData* glob_data, Equation* equation);
+void InitEquation(const GlobalData* glob_data, Equation* equation);
+void AgregatePVectors(const GlobalData* glob_data, const Grid* grid, Equation* equation);
+void SolveEquation(const GlobalData* glob_data, Equation* equation);
 void EquationCleanup(Equation* equation);
 
 #endif
