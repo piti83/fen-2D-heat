@@ -5,21 +5,13 @@
 
 #include "constants.h"
 
-double N1(double ksi, double eta) {
-  return 0.25 * (1 - ksi) * (1 - eta);
-}
+double N1(double ksi, double eta) { return 0.25 * (1 - ksi) * (1 - eta); }
 
-double N2(double ksi, double eta) {
-  return 0.25 * (1 + ksi) * (1 - eta);
-}
+double N2(double ksi, double eta) { return 0.25 * (1 + ksi) * (1 - eta); }
 
-double N3(double ksi, double eta) {
-  return 0.25 * (1 + ksi) * (1 + eta);
-}
+double N3(double ksi, double eta) { return 0.25 * (1 + ksi) * (1 + eta); }
 
-double N4(double ksi, double eta) {
-  return 0.25 * (1 - ksi) * (1 + eta);
-}
+double N4(double ksi, double eta) { return 0.25 * (1 - ksi) * (1 + eta); }
 
 double Gauss1D2P(double (*f)(double)) {
   return kWeightsN2[0] * f(kPointsN2[0]) + kWeightsN2[1] * f(kPointsN2[1]);
@@ -178,7 +170,8 @@ void CalcHbcMatrix(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
       }
 
       double det_j_side = sqrt((n_b->x - n_a->x) * (n_b->x - n_a->x) +
-                               (n_b->y - n_a->y) * (n_b->y - n_a->y)) / 2;
+                               (n_b->y - n_a->y) * (n_b->y - n_a->y)) /
+                          2;
 
       for (int ip = 0; ip < 2; ++ip) {
         double ip_val = kPointsN2[ip];
@@ -234,4 +227,66 @@ void CalcPVector(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
       grid->elements[j].p_vector[i] = 0;
     }
   }
-}
+
+  for (int i = 0; i < grid->n_elements; ++i) {
+    Element* e = &grid->elements[i];
+
+    int id1 = e->nodes[0] - 1;
+    int id2 = e->nodes[1] - 1;
+    int id3 = e->nodes[2] - 1;
+    int id4 = e->nodes[3] - 1;
+
+    int side_nodes[4][2] = {{id1, id2}, {id2, id3}, {id3, id4}, {id4, id1}};
+
+    for (int side = 0; side < 4; ++side) {
+      Node* n_a = &grid->nodes[side_nodes[side][0]];
+      Node* n_b = &grid->nodes[side_nodes[side][1]];
+
+      if (n_a->bc == false || n_b->bc == false) {
+        continue;
+      }
+
+      double length = sqrt((n_b->x - n_a->x) * (n_b->x - n_a->x) +
+                           (n_b->y - n_a->y) * (n_b->y - n_a->y));
+      double det_j_side = length / 2.0;
+
+      for (int ip = 0; ip < 2; ++ip) {
+        double weight = kWeightsN2[ip];
+        double point = kPointsN2[ip];
+
+        double ksi = 0.0;
+        double eta = 0.0;
+
+        switch (side) {
+          case 0:
+            ksi = point;
+            eta = -1.0;
+            break;
+          case 1:
+            ksi = 1.0;
+            eta = point;
+            break;
+          case 2:
+            ksi = -point;
+            eta = 1.0;
+            break;
+          case 3:
+            ksi = -1.0;
+            eta = -point;
+            break;
+        }
+
+        double N[4];
+        N[0] = N1(ksi, eta);
+        N[1] = N2(ksi, eta);
+        N[2] = N3(ksi, eta);
+        N[3] = N4(ksi, eta);
+
+        double coefficient = weight * glob_data->alfa * glob_data->tot * det_j_side;
+
+        for (int k = 0; k < 4; ++k) {
+          e->p_vector[k] += N[k] * coefficient;
+        }
+      }
+    }
+  }
