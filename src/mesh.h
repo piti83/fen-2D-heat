@@ -46,14 +46,14 @@ typedef struct {
 } UniversalVals;
 
 typedef struct {
-  float sim_time;
-  float sim_step_time;
-  float conductivity;
-  float alfa;
-  float tot;
-  float init_temp;
-  float density;
-  float spec_heat;
+  double sim_time;
+  double sim_step_time;
+  double conductivity;
+  double alfa;
+  double tot;
+  double init_temp;
+  double density;
+  double spec_heat;
   int n_nodes;
   int n_elements;
   int nip;
