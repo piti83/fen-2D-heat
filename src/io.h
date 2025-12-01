@@ -12,8 +12,10 @@ void ExportJacobianData(const Grid* grid, const UniversalVals* uni_vals);
 
 void ExportGlobalH(const Equation* equation);
 void ExportGlobalP(const Equation* equation);
+void ExportGlobalC(const Equation* equation);
 
 void ExportHbcMatrices(const Grid* grid);
 void ExportPVectors(const Grid* grid);
+void ExportCMatrices(const Grid* grid);
 
 #endif  // SRC_INPUT_H_

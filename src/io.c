@@ -1,5 +1,6 @@
 #include "io.h"
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -206,6 +207,21 @@ void ExportGlobalP(const Equation* equation) {
   fclose(fptr);
 }
 
+void ExportGlobalC(const Equation* equation) {
+  FILE* fptr = fopen("out/global_c_matrix.txt", "w");
+
+  fprintf(fptr, "[GLOBAL C MATRIX]\n\n");
+  for (int i = 0; i < equation->nn; ++i) {
+    for (int j = 0; j < equation->nn; ++j) {
+      fprintf(fptr, "%6.2lf  ", equation->c[i][j]);
+    }
+    fprintf(fptr, "\n");
+  }
+
+  fclose(fptr);
+}
+
+
 void ExportHbcMatrices(const Grid* grid) {
   FILE* fptr;
   fptr = fopen("out/hbc.txt", "w");
@@ -219,6 +235,43 @@ void ExportHbcMatrices(const Grid* grid) {
       fprintf(fptr, "\t\t");
       for (int hbc_j = 0; hbc_j < 4; ++hbc_j) {
         fprintf(fptr, "%6.3lf   ", e->hbc_matrix[hbc_i][hbc_j]);
+      }
+      fprintf(fptr, "\n");
+    }
+    fprintf(fptr, "\n");
+  }
+
+  fclose(fptr);
+}
+
+void ExportPVectors(const Grid* grid) {
+  FILE* fptr = fopen("out/local_p_vectors.txt", "w");
+
+  fprintf(fptr, "[LOCAL P VECTORS]\n\n");
+  for (int i = 0; i < grid->n_elements; ++i) {
+    Element* e = &grid->elements[i];
+    fprintf(fptr, "\tElement %d:\n\n\t\t", i + 1);
+    for (int p_i = 0; p_i < 4; ++p_i) {
+      fprintf(fptr, "%6.3lf   ", e->p_vector[p_i]);
+    }
+    fprintf(fptr, "\n");
+  }
+
+  fclose(fptr);
+}
+
+void ExportCMatrices(const Grid* grid) {
+  FILE* fptr = fopen("out/local_c_matrices.txt", "w");
+
+  fprintf(fptr, "[LOCAL C MATRICES]\n\n");
+
+  for (int i = 0; i < grid->n_elements; ++i) {
+    Element* e = &grid->elements[i];
+    fprintf(fptr, "\tElement %d:\n\n", i + 1);
+    for (int c_i = 0; c_i < 4; ++c_i) {
+      fprintf(fptr, "\t\t");
+      for (int c_j = 0; c_j < 4; ++c_j) {
+        fprintf(fptr, "%6.3lf   ", e->c_matrix[c_i][c_j]);
       }
       fprintf(fptr, "\n");
     }

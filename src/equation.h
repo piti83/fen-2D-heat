@@ -14,6 +14,7 @@ typedef struct {
 void InitEquation(const GlobalData* glob_data, Equation* equation);
 void AggregatePVector(const GlobalData* glob_data, const Grid* grid, Equation* equation);
 void AggregateHMatrix(const GlobalData* glob_data, const Grid* grid, Equation* equation);
+void AggregateCMatrix(const GlobalData* glob_data, const Grid* grid, Equation* equation);
 void SolveEquation(const GlobalData* glob_data, Equation* equation);
 void EquationCleanup(Equation* equation);
 

@@ -104,7 +104,7 @@ void CalcJacobians(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
   grid->jacobians_calculated = 1;
 }
 
-void CalcHMatrix(Grid* grid, GlobalData* glob_data) {
+void CalcHMatrices(Grid* grid, GlobalData* glob_data) {
   if (!grid->jacobians_calculated) {
     printf("Call CalcJacobians before calculating H\n");
     return;
@@ -132,7 +132,7 @@ void CalcHMatrix(Grid* grid, GlobalData* glob_data) {
   }
 }
 
-void CalcHbcMatrix(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
+void CalcHbcMatrices(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
   int nip = glob_data->nip_bc;
   double* points = GetPoints(nip);
   double* weights = GetWeights(nip);
@@ -211,7 +211,7 @@ void CalcHbcMatrix(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
   }
 }
 
-void CalcPVector(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
+void CalcPVectors(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
   int nip = glob_data->nip_bc;
   double* points = GetPoints(nip);
   double* weights = GetWeights(nip);
@@ -283,4 +283,8 @@ void CalcPVector(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
       }
     }
   }
+}
+
+void CalcCMatrices(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
+
 }

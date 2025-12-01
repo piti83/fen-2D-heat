@@ -45,6 +45,10 @@ void AggregateHMatrix(const GlobalData *glob_data, const Grid *grid, Equation *e
   }
 }
 
+void AggregateCMatrix(const GlobalData* glob_data, const Grid* grid, Equation* equation) {
+
+}
+
 void SolveEquation(const GlobalData* glob_data, Equation* equation) {
 
 }

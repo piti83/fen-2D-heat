@@ -42,29 +42,41 @@ int main(int argc, char* argv[]) {
   UniversalVals uni_vals;
   CalcUniversalVals(&uni_vals, data.nip_elem);
   CalcJacobians(&grid, &uni_vals, &data);
-  CalcHMatrix(&grid, &data);
+  CalcHMatrices(&grid, &data);
 
 #ifdef DEBUG
   ExportJacobianData(&grid, &uni_vals);
 #endif
 
-  CalcHbcMatrix(&grid, &uni_vals, &data);
+  CalcHbcMatrices(&grid, &uni_vals, &data);
 
 #ifdef DEBUG
   ExportHbcMatrices(&grid);
 #endif
 
-  CalcPVector(&grid, &uni_vals, &data);
+  CalcPVectors(&grid, &uni_vals, &data);
+
+#ifdef DEBUG
+  ExportPVectors(&grid);
+#endif
+
+  CalcCMatrices(&grid, &uni_vals, &data);
+
+#ifdef DEBUG
+  ExportCMatrices(&grid);
+#endif
 
   Equation eq;
   InitEquation(&data, &eq);
 
   AggregatePVector(&data, &grid, &eq);
   AggregateHMatrix(&data, &grid, &eq);
+  AggregateCMatrix(&data, &grid, &eq);
 
 #ifdef DEBUG
   ExportGlobalP(&eq);
   ExportGlobalH(&eq);
+  ExportGlobalC(&eq);
 #endif
 
   SolveEquation(&data, &eq);
