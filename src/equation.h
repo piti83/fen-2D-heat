@@ -8,6 +8,7 @@ typedef struct {
   double* t;
   double** hg;
   double* pg;
+  double** c;
 } Equation;
 
 void InitEquation(const GlobalData* glob_data, Equation* equation);

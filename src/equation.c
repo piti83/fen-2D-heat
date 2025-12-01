@@ -13,6 +13,11 @@ void InitEquation(const GlobalData* glob_data, Equation* equation) {
   }
 
   equation->pg = (double*)calloc(equation->nn, sizeof(double));
+
+  equation->c = (double**)malloc(equation->nn * sizeof(double*));
+  for (int i = 0; i < equation->nn; ++i) {
+    equation->c[i] = (double*)calloc(equation->nn, sizeof(double));
+  }
 }
 
 void AggregatePVector(const GlobalData* glob_data, const Grid* grid, Equation* equation) {
@@ -40,7 +45,9 @@ void AggregateHMatrix(const GlobalData *glob_data, const Grid *grid, Equation *e
   }
 }
 
-void SolveEquation(const GlobalData* glob_data, Equation* equation) { ; }
+void SolveEquation(const GlobalData* glob_data, Equation* equation) {
+
+}
 
 void EquationCleanup(Equation* equation) {
   free(equation->t);
@@ -49,4 +56,8 @@ void EquationCleanup(Equation* equation) {
   }
   free(equation->hg);
   free(equation->pg);
+  for (int i = 0; i < equation->nn; ++i) {
+    free(equation->c[i]);
+  }
+  free(equation->c);
 }

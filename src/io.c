@@ -210,9 +210,7 @@ void ExportHbcMatrices(const Grid* grid) {
   FILE* fptr;
   fptr = fopen("out/hbc.txt", "w");
 
-  fprintf(fptr,
-          "========================= CALCULATED HBC MATRICES "
-          "=========================\n\n");
+  fprintf(fptr, "[HBC MATRICES]\n\n");
 
   for (int i = 0; i < grid->n_elements; ++i) {
     Element* e = &grid->elements[i];
