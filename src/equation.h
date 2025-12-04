@@ -19,6 +19,7 @@ void AggregateCMatrix(const GlobalData* glob_data, const Grid* grid, Equation* e
 int GaussElimination(int n, double** a, double *b, double* x);
 void SolveSteadyState(const GlobalData* glob_data, Equation* equation);
 
+void SolveNonStationary(const GlobalData* glob_data, Equation* equation);
 
 void EquationCleanup(Equation* equation);
 

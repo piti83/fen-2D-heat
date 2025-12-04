@@ -40,7 +40,7 @@ void Run(int argc, char** argv) {
 
   ParseCommandLine(&data, argc, argv);
 
-  ReadFile("run/test.txt", &data, &grid);
+  ReadFile("run/test2.txt", &data, &grid);
 
 #ifdef DEBUG
   PrintInfo(&data, &grid);
@@ -91,6 +91,8 @@ void Run(int argc, char** argv) {
 #ifdef DEBUG
   ExportTemperatureVector(&eq);
 #endif
+
+  SolveNonStationary(&data, &eq);
 
   EquationCleanup(&eq);
   GridCleanup(&grid);

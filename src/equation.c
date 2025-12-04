@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void InitEquation(const GlobalData* glob_data, Equation* equation) {
   equation->nn = glob_data->n_nodes;
@@ -135,6 +136,55 @@ void SolveSteadyState(const GlobalData* glob_data, Equation* equation) {
   free(a);
   free(b);
   free(x);
+}
+
+void SolveNonStationary(const GlobalData* glob_data, Equation* equation) {
+  int nn = equation->nn;
+  double dt = glob_data->sim_step_time;
+  double total_time = glob_data->sim_time;
+
+  for (int i = 0; i < nn; ++i) {
+    equation->t[i] = glob_data->init_temp;
+  }
+
+  for (int i = 0; i < nn; ++i) {
+    for (int j = 0; j < nn; ++j) {
+      equation->hg[i][j] += equation->c[i][j] / dt;
+    }
+  }
+
+  double* p_static = (double*)malloc(nn * sizeof(double));
+  for (int i = 0; i < nn; ++i) {
+    p_static[i] = equation->pg[i];
+  }
+
+  double current_time = 0.0;
+  int step = 0;
+
+  while (current_time < total_time) {
+    current_time += dt;
+    step++;
+
+    for (int i = 0; i < nn; ++i) {
+      double c_dt_t0 = 0.0;
+      for (int j = 0; j < nn; ++j) {
+        c_dt_t0 += (equation->c[i][j] / dt) * equation->t[j];
+      }
+      equation->pg[i] = p_static[i] + c_dt_t0;
+    }
+
+    SolveSteadyState(glob_data, equation);
+
+    double min_t = equation->t[0];
+    double max_t = equation->t[0];
+    for (int i = 1; i < nn; ++i) {
+      if (equation->t[i] < min_t) min_t = equation->t[i];
+      if (equation->t[i] > max_t) max_t = equation->t[i];
+    }
+    printf("Step %d (Time %.2f): Min=%.4f, Max=%.4f\n", step, current_time, min_t, max_t);
+  }
+
+  free(p_static);
 }
 
 void EquationCleanup(Equation* equation) {

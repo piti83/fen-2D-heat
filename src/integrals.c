@@ -286,5 +286,46 @@ void CalcPVectors(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
 }
 
 void CalcCMatrices(Grid* grid, UniversalVals* uni_vals, GlobalData* glob_data) {
+  int nip = glob_data->nip_elem;
+  double* weights = GetWeights(nip);
 
+  double c = glob_data->spec_heat;
+  double rho = glob_data->density;
+
+  for (int i = 0; i < grid->n_elements; ++i) {
+    Element* e = &grid->elements[i];
+
+    for (int r = 0; r < 4; ++r) {
+      for (int col = 0; col < 4; ++col) {
+        e->c_matrix[r][col] = 0.0;
+      }
+    }
+
+    int idx = 0;
+    for (int y = 0; y < nip; ++y) {
+      for (int x = 0; x < nip; ++x) {
+        double det_j = e->jacobian[idx].det_j;
+        double weight = weights[y] * weights[x];
+
+        double* points = GetPoints(nip);
+        double ksi = points[x];
+        double eta = points[y];
+
+        double N[4];
+        N[0] = N1(ksi, eta);
+        N[1] = N2(ksi, eta);
+        N[2] = N3(ksi, eta);
+        N[3] = N4(ksi, eta);
+
+        double coefficient = c * rho * det_j * weight;
+
+        for (int r = 0; r < 4; ++r) {
+          for (int c_idx = 0; c_idx < 4; ++c_idx) {
+            e->c_matrix[r][c_idx] += coefficient * N[r] * N[c_idx];
+          }
+        }
+        idx++;
+      }
+    }
+  }
 }
