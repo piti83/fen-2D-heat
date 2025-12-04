@@ -20,4 +20,7 @@ void ExportCMatrices(const Grid* grid);
 
 void ExportTemperatureVector(const Equation* equation);
 
+void InitNonStationaryExport(const GlobalData* data);
+void ExportTempSnapshot(const GlobalData* data, const Equation* equation, double current_time);
+
 #endif  // SRC_INPUT_H_

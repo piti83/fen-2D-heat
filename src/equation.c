@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "io.h"
 
 void InitEquation(const GlobalData* glob_data, Equation* equation) {
   equation->nn = glob_data->n_nodes;
@@ -161,6 +162,8 @@ void SolveNonStationary(const GlobalData* glob_data, Equation* equation) {
   double current_time = 0.0;
   int step = 0;
 
+  InitNonStationaryExport(glob_data);
+
   while (current_time < total_time) {
     current_time += dt;
     step++;
@@ -181,7 +184,7 @@ void SolveNonStationary(const GlobalData* glob_data, Equation* equation) {
       if (equation->t[i] < min_t) min_t = equation->t[i];
       if (equation->t[i] > max_t) max_t = equation->t[i];
     }
-    printf("Step %d (Time %.2f): Min=%.4f, Max=%.4f\n", step, current_time, min_t, max_t);
+    ExportTempSnapshot(glob_data, equation, current_time);
   }
 
   free(p_static);
